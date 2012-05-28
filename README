@@ -1,0 +1,16 @@
+A system to place incoming students into mathematics, statistics
+and computer science classes.
+
+Implementation is currently PHP based and communicates directly with
+MySQL database.
+
+Current ToDo:
+
+Multi-thread - currently places students by iterating through list of 
+students but in case of scaling we could place all students individually
+in seperate threads.
+
+Refactor - many functions are written specifically for placing
+students with data specific to Grinnell College and thus need
+to be generalized
+
