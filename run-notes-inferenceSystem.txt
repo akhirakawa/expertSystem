@@ -1,0 +1,93 @@
+Notes on running student placement inference engine
+
+1. Prepare database (this uses mysql)
+   A. Create a "students" table if one does not already exist
+      This will be used to store all student data exclusive of
+      transfer credits.
+           i. Use createStudentsTable.txt for sql code to create table
+           ii. Use this code for creating the table
+               as some code is dependent on field names.
+   B. Create a transfers table if one does not already exit
+      This table will hold all transfer credit information.
+      Transfer credit data is currently not used in placeing students
+      but the data is printed on LaTeX letters.
+           i. Use transfers.txt for sql code to create table
+           ii. Use this code for creating the table
+               as some code is dependent on field names.
+
+2. Load Data into database
+   A. Obtain data from registrar, naming the file "---.csv"
+           i. Notes on student data
+                    a. The registrar sometimes provides data that
+                       does not include a start year. loadData.php 
+                       will prompt for this
+           ii. Notes on transfer data
+                    a. Students with multiple transfer credits are placed
+                       on multiple rows.
+   B. Place file in same folder as loadData.php
+   C. Run loadData.php to populate existing tables
+      In populating a table, each column title in the spreadsheet must
+      be mapped to a field in the table.  To do this, the program 
+      lists a field from the spreadsheet, and the user enters the
+      corresponding database field label
+           i. At several points, hitting return selects default fields
+              Check defaults or enter the desired field
+          ii. If you wish to populate more than one table, you will need to 
+              run loadData.php for each table
+
+3. Get Placements
+   A. Run inferenceDriver.php
+           i. The script requires a start year which may be given via
+              command line argument or by prompt. 
+          ii. inferenceDriver.php makes direct updates to database and
+              changes recmathplace, recstatplace and reccsplace fields 
+              in the student table.
+
+4. Manual Updates
+   A. You may want to manually edit students placements based on transfer
+      data received from the registrar
+           i. If you want to edit an entire class of students by transfer
+              data, run manual_change_class.php.
+          ii. If you would like to change a particular student on
+              transfer grades, run manual_placements_transfer.php
+                   a. To edit a particular student you must know the
+                      studentID.
+
+5. Generate Letters
+   A. Run generateLetters.php with start year as the command line argument
+           i. This script produces a "letters$year.tex" file.
+          ii. The file will be in a folder called generated or the current
+              directory
+         iii. Output file should have twice as many pages as students in
+              that current year. 
+   B. Run latex on the file generateLetters.php produces.
+           i. The command is 'latex file' where file is the produced .tex
+              file from generateLetters.
+                   a. Output file should have twice as many pages as students in
+                      that current year.
+   C. Run dvips on the .dvi file that the latex command produced.
+           i. The command is 'dvips -O [options] file.dvi where file is the 
+              produced .dvi when the latex command was run.
+                   a. The [options] values for the printer we use (escher)
+                      were '-0.3in,0.6in' which makes the command
+                      'dvips -O -0.3in,0.6in file.dvi'.
+                      However, this is surely to be variable by printer.
+          ii. This command produces a "---.ps" file. This is the final
+               product of the inference engine system.
+   D. Load letters into evince
+           i. Print from evince
+                    a.  check 1 letter to be sure margins are appropriate
+                    b.  then run all letters
+   
+6.  Generate Reports
+   A. Run placement_listing.php to generate listing of students and placements
+           i. The script requires a start year to be entered at a prompt.
+          ii. Give copies of output to faculty, so they can annotate 
+              adjustements made after individual conferences during 
+              New Student Days
+         iii. After updating the database with revised placements
+              (perhaps with manual_update.php), run placement_listing.php
+              again to obtain listing for Registrar's Office
+   B.  Run printSummary.php to generate summary statistics on class placements
+
+   
